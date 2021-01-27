@@ -7,12 +7,25 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Umi.API.Database;
 using Umi.API.Services;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace Umi.API
 {
+    
+
     public class Startup
     {
+        public IConfiguration Configuration { get; }
+
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+        
+        
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         // inject service: {custom, managed}
@@ -22,12 +35,20 @@ namespace Umi.API
             services.AddControllers();
             // add service dependence: <interface, implementation>
             // 1. every request init independent data repo 
-            services.AddTransient<ITouristRouteRepository, MockTouristRouteRepository>();
+            // services.AddTransient<ITouristRouteRepository, MockTouristRouteRepository>();
+            services.AddTransient<ITouristRouteRepository, TouristRouteRepository>();
 
             // 2. init only repository, shared data channel 
             // services.AddSingleton<>();
             // 3. transaction (grouped requests) - repo
             // services.AddScoped<>();
+            
+            services.AddDbContext<AppDbContext>(option =>
+            {
+                // conn for docker
+                // option.UseSqlServer("server=localhost; Database=UmiDb; User Id=sa; Password=Gravi1984");
+                option.UseSqlServer(Configuration["DbContext:ConnectionString"]);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
