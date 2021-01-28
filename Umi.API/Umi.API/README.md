@@ -6,7 +6,7 @@
     `docker imagesdd` 
 2. run the image
      <br>`docker run -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD={pwd}' -p 1433:1433 -d microsoft/mssql-server-linux`
-     <br> `docker run -itd --name mysql-test -p 3306:3306 -e MYSQL_ROOT_PASSWORD=Gravi1984 mysql`
+     <br> `docker run -itd --name mysql-test -p 3306:3306 -e MYSQL_ROOT_PASSWORD={pwd} mysql`
      <br>`docker ps`
 3. test local db connection to local:1433 with login set above
 
