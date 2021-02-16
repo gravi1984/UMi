@@ -12,6 +12,8 @@ namespace Umi.API.Models.Profiles
 
             // add mapping in Profile => AutoMapper
             CreateMap<TouristRoutePictureForCreationDto, TouristRoutePicture>();
+            
+            CreateMap<TouristRoutePicture, TouristRoutePictureForCreationDto>();
         }
     }
 }

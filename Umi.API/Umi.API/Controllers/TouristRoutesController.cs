@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Umi.API.Dtos;
 using Umi.API.Services;
 using AutoMapper;
+using Microsoft.AspNetCore.JsonPatch;
 using Umi.API.Models;
 using Umi.API.ResourceParameters;
 
@@ -138,8 +139,34 @@ namespace Umi.API.Controllers
             // 204
             return NoContent();
 
+        }
 
+        [HttpPatch("{touristRouteId}")]
+        public IActionResult PatchUpdateTouristRoute(
+            [FromRoute] Guid touristRouteId,
+            [FromBody] JsonPatchDocument<TouristRouteForUpdateDto> patchDocument)
+        {
+            
+            if (!_touristRouteRepository.TouristRouteExists(touristRouteId))
+            {
+                return NotFound("not found");
+            }
 
+            var touristRouteFromRepo = _touristRouteRepository.GetTouristRoute(touristRouteId);
+
+            // map from repo to a Update Dto
+            var touristRouteToPatch = _mapper.Map<TouristRouteForUpdateDto>(touristRouteFromRepo);
+            
+            // apply input patch to Update Dto
+            patchDocument.ApplyTo(touristRouteToPatch);
+
+            // input Update Dto -> Repo Model
+            _mapper.Map(touristRouteToPatch, touristRouteFromRepo);
+            
+            // must Save to db
+            _touristRouteRepository.Save();
+            
+            return NoContent();
 
         }
         

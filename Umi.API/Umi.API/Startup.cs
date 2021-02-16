@@ -14,6 +14,7 @@ using Umi.API.Database;
 using Umi.API.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json.Serialization;
 
 namespace Umi.API
 {
@@ -40,7 +41,12 @@ namespace Umi.API
                     // setupAction.OutputFormatters.Add(
                     //     new XmlDataContractSerializerOutputFormatter()
                     //     );
-                }).AddXmlDataContractSerializerFormatters()
+                })
+                .AddNewtonsoftJson(setupAction =>
+                {
+                    setupAction.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                })
+                .AddXmlDataContractSerializerFormatters()
                 // configure data validation fail response 422
                 .ConfigureApiBehaviorOptions(
                     setupAction => setupAction.InvalidModelStateResponseFactory = context =>
