@@ -157,11 +157,18 @@ namespace Umi.API.Controllers
             // map from repo to a Update Dto
             var touristRouteToPatch = _mapper.Map<TouristRouteForUpdateDto>(touristRouteFromRepo);
             
-            // apply input patch to Update Dto
-            patchDocument.ApplyTo(touristRouteToPatch);
+            // apply input patch to Update 
+            // bind modelstate <> dto
+            patchDocument.ApplyTo(touristRouteToPatch, ModelState);
 
             // input Update Dto -> Repo Model
             _mapper.Map(touristRouteToPatch, touristRouteFromRepo);
+            
+            // do data validation, refer dto rule: TouristRouteForUpdateDto
+            if (!TryValidateModel(touristRouteToPatch))
+            {
+                return ValidationProblem(ModelState);
+            }
             
             // must Save to db
             _touristRouteRepository.Save();
