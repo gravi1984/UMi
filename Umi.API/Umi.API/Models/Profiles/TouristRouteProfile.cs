@@ -36,6 +36,8 @@ namespace Umi.API.Models.Profiles
                     
                     );
 
+            CreateMap<TouristRouteForUpdateDto, TouristRoute>();
+
         }
         }
     }

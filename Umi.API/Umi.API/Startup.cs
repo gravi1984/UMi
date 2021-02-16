@@ -17,8 +17,6 @@ using Microsoft.Extensions.Configuration;
 
 namespace Umi.API
 {
-    
-
     public class Startup
     {
         public IConfiguration Configuration { get; }
@@ -27,8 +25,8 @@ namespace Umi.API
         {
             Configuration = configuration;
         }
-        
-        
+
+
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         // inject service: {custom, managed}
@@ -37,33 +35,33 @@ namespace Umi.API
             // inject managed services
             // return 406 when request with unsupported Accept header
             services.AddControllers(setupAction =>
-            {
-                setupAction.ReturnHttpNotAcceptable = true;
-                // setupAction.OutputFormatters.Add(
-                //     new XmlDataContractSerializerOutputFormatter()
-                //     );
-            }).AddXmlDataContractSerializerFormatters()
+                {
+                    setupAction.ReturnHttpNotAcceptable = true;
+                    // setupAction.OutputFormatters.Add(
+                    //     new XmlDataContractSerializerOutputFormatter()
+                    //     );
+                }).AddXmlDataContractSerializerFormatters()
+                // configure data validation fail response 422
                 .ConfigureApiBehaviorOptions(
                     setupAction => setupAction.InvalidModelStateResponseFactory = context =>
                     {
+                        // info to shown to FE
                         var problemDetail = new ValidationProblemDetails(context.ModelState)
                         {
-                            Type =  "no matter",
+                            Type = "no matter",
                             Title = "data validation fail",
                             Status = StatusCodes.Status422UnprocessableEntity,
                             Detail = "please look clarification",
-                            Instance =  context.HttpContext.Request.Path
-                            
+                            Instance = context.HttpContext.Request.Path
                         };
                         problemDetail.Extensions.Add("traceId", context.HttpContext.TraceIdentifier);
                         return new UnprocessableEntityObjectResult(problemDetail)
                         {
-                            ContentTypes = { "application/problem+json"}
-                            
+                            ContentTypes = {"application/problem+json"}
                         };
                     });
-            
-            
+
+
             // add service dependence: <interface, implementation>
             // 1. every request init independent data repo 
             // services.AddTransient<ITouristRouteRepository, MockTouristRouteRepository>();
@@ -73,7 +71,7 @@ namespace Umi.API
             // services.AddSingleton<>();
             // 3. transaction (grouped requests) - repo
             // services.AddScoped<>();
-            
+
             services.AddDbContext<AppDbContext>(option =>
             {
                 // conn for docker
@@ -110,8 +108,6 @@ namespace Umi.API
 
 
                 endpoints.MapControllers();
-                
-                
             });
         }
     }

@@ -110,6 +110,40 @@ namespace Umi.API.Controllers
                 new {touristRouteId = touristRouteToReturn.Id},
                 touristRouteToReturn);
         }
+
+        [HttpPut("{touristRouteId}")]
+        public IActionResult UpdateTouristRoute(
+            [FromRoute] Guid touristRouteId,
+        [FromBody] TouristRouteForUpdateDto touristRouteForUpdateDto
+        )
+        {
+
+            if (!_touristRouteRepository.TouristRouteExists(touristRouteId))
+            {
+                return NotFound("not found");
+            }
+            
+            var touristRouteFromRepo = _touristRouteRepository.GetTouristRoute(touristRouteId);
+            
+
+            // 1. from repo -> dto
+            // 2. update dto
+            // 3. update model
+
+            // use input body to update model from repo
+            _mapper.Map(touristRouteForUpdateDto, touristRouteFromRepo);
+
+            _touristRouteRepository.Save();
+
+            // 204
+            return NoContent();
+
+
+
+
+        }
+        
+        
         
     }
 }
