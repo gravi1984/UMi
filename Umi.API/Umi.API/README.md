@@ -40,3 +40,22 @@
 2. ASP.NET Core: Data Annotation(rule), ModelState.IsValid(check), Error response(return)
 
 
+#### Async Refactor
+1. async await:  
+```
+valid return { void task task<T> IAsyncIEnumerable<T>}
+await Expr: invoke - ...... - await only when need? 
+naming function: DoxxxxxAsync
+caller of async must be async
+task<T>: return invoker; open new thread to continue+suspend current thread
+
+Componet: 
+1. aysnc functin: no need wait itself to finish, caller continue
+2. call async: contain await 
+```
+2. multi-threading
+3. multi-machine
+4. kubernetes
+
+5. step: repo -> controller to async
+

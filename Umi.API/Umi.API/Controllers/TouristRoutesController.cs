@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Umi.API.Dtos;
 using Umi.API.Services;
@@ -32,7 +33,7 @@ namespace Umi.API.Controllers
         [HttpGet]
         [HttpHead]
         // check if resource exist; cache
-        public IActionResult GetTouristRoutes(
+        public async Task<IActionResult> GetTouristRoutes(
             [FromQuery] TouristRouteResourceParameters parameters  // FromQuery vs FromBody
         ) 
         {
@@ -49,7 +50,7 @@ namespace Umi.API.Controllers
             //     ratingValue = Int32.Parse(match.Groups[2].Value);
             // }
             //
-            var touristRoutesFromRepo = _touristRouteRepository.GetTouristRoutes(parameters.Keyword, parameters.RatingOpt, parameters.RatingValue);
+            var touristRoutesFromRepo = await _touristRouteRepository.GetTouristRoutesAsync(parameters.Keyword, parameters.RatingOpt, parameters.RatingValue);
             if (!touristRoutesFromRepo.Any())
             {
                 return NotFound("no routes found");
@@ -64,9 +65,9 @@ namespace Umi.API.Controllers
 
         [HttpGet("{touristRouteId}", Name = "GetTouristRouteById")]
         [HttpHead("{touristRouteId}")]
-        public IActionResult GetTouristRouteById(Guid touristRouteId) // this is FromRoute
+        public async Task<IActionResult> GetTouristRouteById(Guid touristRouteId) // this is FromRoute
         {
-            var touristRoutesFromRepo = _touristRouteRepository.GetTouristRoute(touristRouteId);
+            var touristRoutesFromRepo = await _touristRouteRepository.GetTouristRouteAsync(touristRouteId);
             if (touristRoutesFromRepo == null)
             {
                 return NotFound("no route found with provided id");
@@ -90,7 +91,7 @@ namespace Umi.API.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateTouristRoute(
+        public async Task<IActionResult> CreateTouristRoute(
             [FromBody] TouristRouteForCreationDto touristRouteForCreationDto
             )
         {
@@ -100,7 +101,7 @@ namespace Umi.API.Controllers
             // _repo _context Save Model
             var touristRouteModel = _mapper.Map<TouristRoute>(touristRouteForCreationDto);
             _touristRouteRepository.AddTouristRoute(touristRouteModel);
-            _touristRouteRepository.Save();
+            await _touristRouteRepository.SaveAsync();
 
             // Map model to readDto
             // return CreatedAtRoute([httpget] name, getby{id}, readDto)
@@ -113,18 +114,18 @@ namespace Umi.API.Controllers
         }
 
         [HttpPut("{touristRouteId}")]
-        public IActionResult UpdateTouristRoute(
+        public async Task<IActionResult> UpdateTouristRoute(
             [FromRoute] Guid touristRouteId,
         [FromBody] TouristRouteForUpdateDto touristRouteForUpdateDto
         )
         {
 
-            if (!_touristRouteRepository.TouristRouteExists(touristRouteId))
+            if (! (await _touristRouteRepository.TouristRouteExistsAsync(touristRouteId)))
             {
                 return NotFound("not found");
             }
             
-            var touristRouteFromRepo = _touristRouteRepository.GetTouristRoute(touristRouteId);
+            var touristRouteFromRepo = await _touristRouteRepository.GetTouristRouteAsync(touristRouteId);
             
 
             // 1. from repo -> dto
@@ -134,7 +135,7 @@ namespace Umi.API.Controllers
             // use input body to update model from repo
             _mapper.Map(touristRouteForUpdateDto, touristRouteFromRepo);
 
-            _touristRouteRepository.Save();
+            await _touristRouteRepository.SaveAsync();
 
             // 204
             return NoContent();
@@ -142,17 +143,17 @@ namespace Umi.API.Controllers
         }
 
         [HttpPatch("{touristRouteId}")]
-        public IActionResult PatchUpdateTouristRoute(
+        public async Task<IActionResult> PatchUpdateTouristRoute(
             [FromRoute] Guid touristRouteId,
             [FromBody] JsonPatchDocument<TouristRouteForUpdateDto> patchDocument)
         {
             
-            if (!_touristRouteRepository.TouristRouteExists(touristRouteId))
+            if (! await _touristRouteRepository.TouristRouteExistsAsync(touristRouteId))
             {
                 return NotFound("not found");
             }
 
-            var touristRouteFromRepo = _touristRouteRepository.GetTouristRoute(touristRouteId);
+            var touristRouteFromRepo = await _touristRouteRepository.GetTouristRouteAsync(touristRouteId);
 
             // map from repo to a Update Dto
             var touristRouteToPatch = _mapper.Map<TouristRouteForUpdateDto>(touristRouteFromRepo);
@@ -171,7 +172,7 @@ namespace Umi.API.Controllers
             }
             
             // must Save to db
-            _touristRouteRepository.Save();
+            await _touristRouteRepository.SaveAsync();
             
             return NoContent();
 
@@ -179,26 +180,34 @@ namespace Umi.API.Controllers
 
         [HttpDelete("{touristRouteId}")]
 
-        public IActionResult DeleteTouristRoute(
+        public async Task<IActionResult> DeleteTouristRoute(
             [FromRoute] Guid touristRouteId)
         {
             
-            if (!_touristRouteRepository.TouristRouteExists(touristRouteId))
+            if (!await _touristRouteRepository.TouristRouteExistsAsync(touristRouteId))
             {
                 return NotFound("not found");
             }
 
-            var touristFromRepo = _touristRouteRepository.GetTouristRoute(touristRouteId);
+            var touristFromRepo = await _touristRouteRepository.GetTouristRouteAsync(touristRouteId);
 
             _touristRouteRepository.DeleteTouristRoute(touristFromRepo);
 
-            _touristRouteRepository.Save();
+            await _touristRouteRepository.SaveAsync();
 
             return NoContent();
 
-
-
         }
+        
+        // DELETE /touristRoute/(1,2,3,4)
+        // [HttpDelete ("{touristIds}")]
+        //
+        // public IActionResult DeleteByIds(
+        //     [FromRoute] IEnumerable<Guid> touristIds
+        // )
+        // {
+        //     
+        // }
         
         
         

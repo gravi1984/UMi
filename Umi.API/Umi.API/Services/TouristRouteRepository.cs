@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Umi.API.Database;
@@ -17,17 +18,17 @@ namespace Umi.API.Services
             _context = context;
         }
 
-        public IEnumerable<TouristRoute> GetTouristRoutes(
+        public async Task<IEnumerable<TouristRoute>> GetTouristRoutesAsync(
             string keyword,
-        string ratingOpt, 
-        int? ratingValue
+            string ratingOpt,
+            int? ratingValue
         )
         {
             // defer execution Linq -> SQL
             // Include: TouristRoute join Picture
             IQueryable<TouristRoute> result = _context
                 .TouristRoutes
-                .Include(t=>t.TouristRoutePictures);
+                .Include(t => t.TouristRoutePictures);
             if (!string.IsNullOrWhiteSpace(keyword))
             {
                 keyword = keyword.Trim();
@@ -41,40 +42,35 @@ namespace Umi.API.Services
                     "largerThan" => result.Where(t => t.Rating >= ratingValue),
                     "lessThan" => result.Where(t => t.Rating <= ratingValue),
                     _ => result.Where(t => t.Rating == ratingValue)
-            
                 };
-            
-            
             }
-            
+
             // if keyword is empty, return all list is fine.
-            return result.ToList();
+            return await result.ToListAsync();
 
             // EF: include to join 2 table by FK
             // include vs join: Eager Load
             // Lazy Load
-
         }
 
-        public TouristRoute GetTouristRoute(Guid id)
+        public async Task<TouristRoute> GetTouristRouteAsync(Guid id)
         {
-            return _context.TouristRoutes.Include(t=>t.TouristRoutePictures).FirstOrDefault(n => n.Id == id);
+            return await _context.TouristRoutes.Include(t => t.TouristRoutePictures).FirstOrDefaultAsync(n => n.Id == id);
         }
 
-        public bool TouristRouteExists(Guid id)
+        public async Task<bool> TouristRouteExistsAsync(Guid id)
         {
-            return _context.TouristRoutes.Any(t => t.Id == id);
+            return await _context.TouristRoutes.AnyAsync(t => t.Id == id);
         }
 
-        public IEnumerable<TouristRoutePicture> GetPicturesByTouristRouteId(Guid id)
+        public async Task<IEnumerable<TouristRoutePicture>> GetPicturesByTouristRouteIdAsync(Guid id)
         {
-
-            return _context.TouristRoutePictures.Where(p => p.TouristRouteId == id).ToList();
+            return await _context.TouristRoutePictures.Where(p => p.TouristRouteId == id).ToListAsync();
         }
 
-        public TouristRoutePicture GetPicture(int id)
+        public async Task<TouristRoutePicture> GetPictureAsync(int id)
         {
-            return _context.TouristRoutePictures.FirstOrDefault(p => p.Id == id);
+            return await _context.TouristRoutePictures.FirstOrDefaultAsync(p => p.Id == id);
         }
 
         public void AddTouristRoute(TouristRoute touristRoute)
@@ -85,7 +81,7 @@ namespace Umi.API.Services
             }
 
             _context.TouristRoutes.Add(touristRoute);
-            
+
             // _context.SaveChanges();
         }
 
@@ -94,9 +90,9 @@ namespace Umi.API.Services
             _context.TouristRoutes.Remove(touristRoute);
         }
 
-        public bool Save()
+        public async Task<bool> SaveAsync()
         {
-            return (_context.SaveChanges() >= 0);
+            return (await _context.SaveChangesAsync() >= 0);
         }
 
         public void AddTouristRoutePicture(Guid touristRouteId, TouristRoutePicture touristRoutePicture)

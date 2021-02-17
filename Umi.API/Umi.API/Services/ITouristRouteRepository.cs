@@ -2,25 +2,28 @@ using System;
 using System.Collections.Generic;
 using Umi.API.Dtos;
 using Umi.API.Models;
+using System.Threading.Tasks;
 
 namespace Umi.API.Services
 {
     public interface ITouristRouteRepository
     {
         // from DB, get all routes
-        IEnumerable<TouristRoute> GetTouristRoutes(string keyword, string ratingOpt, int? ratingValue);
-        TouristRoute GetTouristRoute(Guid id);
+        Task<IEnumerable<TouristRoute>> GetTouristRoutesAsync(string keyword, string ratingOpt, int? ratingValue);
+        Task<TouristRoute> GetTouristRouteAsync(Guid id);
 
-        bool TouristRouteExists(Guid id);
+        Task<bool> TouristRouteExistsAsync(Guid id);
 
-        IEnumerable<TouristRoutePicture> GetPicturesByTouristRouteId(Guid id);
+        Task<IEnumerable<TouristRoutePicture>> GetPicturesByTouristRouteIdAsync(Guid id);
         
-        TouristRoutePicture GetPicture(int id);
+        Task<TouristRoutePicture> GetPictureAsync(int id);
+        
+        Task<bool> SaveAsync();
 
         void AddTouristRoute(TouristRoute touristRoute);
         void DeleteTouristRoute(TouristRoute touristRoute);
 
-        bool Save();
+      
 
         void AddTouristRoutePicture(Guid touristRouteId, TouristRoutePicture touristRoutePicture);
         void DeleteTouristRoutePicture(TouristRoutePicture touristRoutePicture);
