@@ -1,4 +1,4 @@
-#### use docker run mssql on mac/linux
+#### run mssql with Docker
 
 1. pull docker mssql image
     <br>`docker pull microsoft/mssql-server-linux`
@@ -11,7 +11,7 @@
 3. test local db connection to local:1433 with login set above
 
 
-#### use EF dotnet sdk to do data migration and update
+#### run data migration with EF
 1. install package EF core; {EF core.SqlServer, Pomelo EFcore.Mysql}
 2. create Database/AppDbContext.cs: Model <- Bridger -> Db
 3. inject service; configure conn string
@@ -25,22 +25,22 @@
       dotnet ef database update -p Umi.API
       ```
 
-#### use AutoMapper to do Model -> Dto
+#### do Model <-> Dto with AutoMapper
 1. Scan Profile to do Auto Map
 
 
-#### api param, keyword, data filter
+#### do keyword search, data filter with API param, LINQ
 1. From Query/Body/Form/Route/Service
 2. usr FromQuery to do keyword search
 3. LINQ(SQL statement)-> IQueryable(defer execution)-> Aggregate(ToList(), Count(), SingleOrDefault())
 4. use parameter to group manage/make optional url params
 
-#### data input verification
+#### do data verification with Data Annotation, ModelState
 1. rule: DTO vs Model
 2. ASP.NET Core: Data Annotation(rule), ModelState.IsValid(check), Error response(return)
 
 
-#### Async Refactor
+#### refactor project with Async/Await
 1. async await:  
 ```
 valid return { void task task<T> IAsyncIEnumerable<T>}
