@@ -83,3 +83,12 @@ build docker image
 docker run -d -p 127.0.0.1:3000:80 44cb4ace5601
 ^^
 
+
+#### Authorisation with JWT
+1. 401(unauthorised) 403(forbidden)
+2. Session: ? stateful login
+3. JWT: stateless login; replace cookie; stored in Client; 
+    good: distributed deployment with multiple server
+    bad: unrevokable token; undecrypted msg-> using https SSL can avoid
+4. alg: HEADER + PAYLOAD + SIG using RSA; server using private key to decrypt
+5. SSO: pre-matured framework
