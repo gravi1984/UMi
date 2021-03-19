@@ -8,7 +8,7 @@ namespace Umi.API.Models
     {
         
         public string Address { get; set; }
-        // public string shoppingCart { get; set; }
+        public ShoppingCart ShoppingCart { get; set; }
         // public string Orders { get; set; }
         
         

@@ -22,6 +22,10 @@ namespace Umi.API.Database
 
         public  DbSet<TouristRoute> TouristRoutes { get; set; }
         public DbSet<TouristRoutePicture> TouristRoutePictures { get; set; }
+        
+        // new DataModel
+        public DbSet<ShoppingCart> ShoppingCarts { get; set; }
+        public DbSet<LineItem> LineItems { get; set; }
 
         // customize ORM mapping, e.g. change mapped table name, DataAnnotation
         protected override void OnModelCreating(ModelBuilder modelBuilder)

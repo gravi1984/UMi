@@ -95,7 +95,7 @@ namespace Umi.API.Controllers
 
         [HttpPost]
         [Authorize(AuthenticationSchemes = "Bearer")]
-        // [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateTouristRoute(
             [FromBody] TouristRouteForCreationDto touristRouteForCreationDto
             )
