@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Claims;
@@ -104,7 +105,40 @@ namespace Umi.API.Controllers
             // 3. return 200
             return NoContent();
         }
-        
+
+
+        [HttpPost("checkout")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        public async Task<IActionResult> Checkout()
+        {
+            
+            // 1. get Cart
+            var userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var shoppingCart = await _touristRouteRepository.GetShoppingCartByUserId(userId);
+            
+            // 2. generate new order and clean cart
+
+            var order = new Order()
+            {
+                Id = Guid.NewGuid(),
+                UserId = userId,
+                State = OrderStateEnum.Pending,
+                OrderItems = shoppingCart.ShoppingCartItems,
+                CreateDateUTC = DateTime.Now,
+            };
+            
+            shoppingCart.ShoppingCartItems = null;
+            
+            
+            // 3.  save order data
+            
+            await _touristRouteRepository.AddOrderAsync(order);
+            await _touristRouteRepository.SaveAsync();
+
+            // 4. return #order
+
+            return Ok(_mapper.Map<OrderDto>(order));
+        }
 
         // [HttpDelete("items/({itemIds})")]
         // [Authorize(AuthenticationSchemes = "Bearer")]

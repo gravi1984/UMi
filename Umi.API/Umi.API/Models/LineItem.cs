@@ -17,6 +17,9 @@ namespace Umi.API.Models
         [ForeignKey("ShoppingCardId")]
         public Guid? ShoppingCardId { get; set; } 
         
+        [ForeignKey("OrderId")]
+        public Guid? OrderId { get; set; } 
+        
         // public Guid? OrderId { get; set; }
         
         [Column(TypeName = "decimal(18,2)")]

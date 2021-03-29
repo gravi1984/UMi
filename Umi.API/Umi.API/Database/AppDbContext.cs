@@ -106,10 +106,17 @@ namespace Umi.API.Database
             modelBuilder.Entity<ShoppingCart>(s =>
             {
                 s.HasMany(s => s.ShoppingCartItems)
-                    .WithOne().HasForeignKey(li => li.ShoppingCardId).IsRequired();
+                    .WithOne().HasForeignKey(li => li.ShoppingCardId);
             });
-
             
+             
+            modelBuilder.Entity<Order>(o =>
+            {
+                o.HasMany(o => o.OrderItems)
+                    .WithOne().HasForeignKey(li => li.OrderId);
+            });
+            
+        
             base.OnModelCreating(modelBuilder);
         }
     }

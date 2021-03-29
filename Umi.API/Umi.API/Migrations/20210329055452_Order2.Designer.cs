@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Umi.API.Database;
 
 namespace Umi.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210329055452_Order2")]
+    partial class Order2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -46,7 +48,7 @@ namespace Umi.API.Migrations
                         new
                         {
                             Id = "R-000",
-                            ConcurrencyStamp = "a32ba618-3834-47d3-91d7-c92eee721a80",
+                            ConcurrencyStamp = "02a6be99-8f4d-4734-98f5-7a77a445d226",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
@@ -252,16 +254,16 @@ namespace Umi.API.Migrations
                         {
                             Id = "U-OOO",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "18abf5e0-6790-44ba-be30-be63d11ee89b",
+                            ConcurrencyStamp = "2fd0dedc-04a2-40bc-814e-196f06cc0620",
                             Email = "admin@umi.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@UMI.COM",
                             NormalizedUserName = "ADMIN@UMI.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEBvjXHSBNE/WHz11qrlw0qMJLIyBokSVaphfNoSnJfS/Fg4Yjxi7FBIOtSlFlSRwtQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEKwXSu36CKxHpXC6mXdO3Xy9+FQcoGPeKjtTfg5lmcX5x2aIsSGAGa9MJ7vAATobDQ==",
                             PhoneNumber = "123456",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "5ecf70d6-05a8-4c36-b1b9-f7d3515ab431",
+                            SecurityStamp = "dffa6be0-03f5-480d-b4b6-64c5b2a0a166",
                             TwoFactorEnabled = false,
                             UserName = "admin@umi.com"
                         });
@@ -277,12 +279,14 @@ namespace Umi.API.Migrations
                         .HasColumnType("double");
 
                     b.Property<Guid?>("OrderId")
+                        .IsRequired()
                         .HasColumnType("char(36)");
 
                     b.Property<decimal>("OriginalPrice")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<Guid?>("ShoppingCardId")
+                        .IsRequired()
                         .HasColumnType("char(36)");
 
                     b.Property<Guid>("TouristRouteId")
@@ -1143,11 +1147,15 @@ namespace Umi.API.Migrations
                 {
                     b.HasOne("Umi.API.Models.Order", null)
                         .WithMany("OrderItems")
-                        .HasForeignKey("OrderId");
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Umi.API.Models.ShoppingCart", null)
                         .WithMany("ShoppingCartItems")
-                        .HasForeignKey("ShoppingCardId");
+                        .HasForeignKey("ShoppingCardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Umi.API.Models.TouristRoute", "TouristRoute")
                         .WithMany()

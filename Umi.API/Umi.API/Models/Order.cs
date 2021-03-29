@@ -5,7 +5,6 @@ using Stateless;
 
 namespace Umi.API.Models
 {
-
     public enum OrderStateEnum
     {
         Pending,    // Order generated but not pay, can be cancel ^^

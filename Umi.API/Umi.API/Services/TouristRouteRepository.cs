@@ -158,5 +158,10 @@ namespace Umi.API.Services
         {
             _context.LineItems.RemoveRange(lineItems);
         }
+
+        public async Task AddOrderAsync(Order order)
+        {
+            await _context.Orders.AddAsync(order);
+        }
     }
 }

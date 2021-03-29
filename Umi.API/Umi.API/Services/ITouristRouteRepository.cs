@@ -38,6 +38,8 @@ namespace Umi.API.Services
         Task<IEnumerable<LineItem>> GetShoppingCartItemsByIds(IEnumerable<int> lineItemIds);
         void DeleteShoppingCartItems(IEnumerable<LineItem> lineItems);
 
+        Task AddOrderAsync(Order order);
+
         Task<bool> SaveAsync();
     }
 }

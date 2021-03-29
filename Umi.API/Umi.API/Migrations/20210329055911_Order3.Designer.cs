@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Umi.API.Database;
 
 namespace Umi.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210329055911_Order3")]
+    partial class Order3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -46,7 +48,7 @@ namespace Umi.API.Migrations
                         new
                         {
                             Id = "R-000",
-                            ConcurrencyStamp = "a32ba618-3834-47d3-91d7-c92eee721a80",
+                            ConcurrencyStamp = "70cf844f-2e19-4bb3-8372-e7b7c4d0295a",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
@@ -252,16 +254,16 @@ namespace Umi.API.Migrations
                         {
                             Id = "U-OOO",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "18abf5e0-6790-44ba-be30-be63d11ee89b",
+                            ConcurrencyStamp = "9a7ff531-ba8e-4228-9649-f82fa2c8ae38",
                             Email = "admin@umi.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@UMI.COM",
                             NormalizedUserName = "ADMIN@UMI.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEBvjXHSBNE/WHz11qrlw0qMJLIyBokSVaphfNoSnJfS/Fg4Yjxi7FBIOtSlFlSRwtQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEG84NDjvHyFFs1hamcAeyT9yciRjG2zTqIYtkzoHMLvINM8AaYyPw1qN/TaQ65ZPFQ==",
                             PhoneNumber = "123456",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "5ecf70d6-05a8-4c36-b1b9-f7d3515ab431",
+                            SecurityStamp = "9d3cf29d-efb0-461d-b856-a39f83378a76",
                             TwoFactorEnabled = false,
                             UserName = "admin@umi.com"
                         });
