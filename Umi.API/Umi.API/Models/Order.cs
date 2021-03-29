@@ -1,21 +1,37 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Stateless;
 
 namespace Umi.API.Models
 {
 
     public enum OrderStateEnum
     {
-        Pending,
-        Processing,
+        Pending,    // Order generated but not pay, can be cancel ^^
+        Processing, 
         Completed,
         Declined,
         Cancelled,
         Refund
     }
+
+    public enum OrderStateTriggerEnum
+    {
+        PlaceOrder, // Pending -> Processing
+        Approve,    // Processing -> Completed
+        Reject,     // Processing -> Declined
+        Cancel,     // Pending -> Cancelled
+        Return      // Completed -> Refund
+    }
     public class Order
     {
+
+        public Order()
+        {
+            StateMachineInit();
+        }
+        
         [Key]
         public Guid Id { get; set; }
         
@@ -31,6 +47,28 @@ namespace Umi.API.Models
         
         // 3rd payment callback response, give to FE
         public string TransactionMetadata { get; set; }
-       
+
+        StateMachine<OrderStateEnum, OrderStateTriggerEnum> _machine;
+
+        
+        private void StateMachineInit()
+        {
+            _machine = new StateMachine<OrderStateEnum, OrderStateTriggerEnum>(OrderStateEnum.Pending);
+
+            _machine.Configure(OrderStateEnum.Pending)
+                .Permit(OrderStateTriggerEnum.PlaceOrder, OrderStateEnum.Processing)
+                .Permit(OrderStateTriggerEnum.Cancel, OrderStateEnum.Cancelled);
+
+            _machine.Configure(OrderStateEnum.Processing)
+                .Permit(OrderStateTriggerEnum.Approve, OrderStateEnum.Completed)
+                .Permit(OrderStateTriggerEnum.Reject, OrderStateEnum.Declined);
+
+            _machine.Configure(OrderStateEnum.Declined)
+                .Permit(OrderStateTriggerEnum.PlaceOrder, OrderStateEnum.Processing);
+
+            _machine.Configure(OrderStateEnum.Completed)
+                .Permit(OrderStateTriggerEnum.Return, OrderStateEnum.Refund);
+        }
+
     }
 }

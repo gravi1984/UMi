@@ -17,6 +17,7 @@
 <!--      <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="1.0.0-preview3-final" />-->
       <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
       <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="3.1.1" />
+      <PackageReference Include="stateless" Version="5.1.1" />
     </ItemGroup>
 
     <ItemGroup>

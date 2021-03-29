@@ -95,6 +95,7 @@ docker run -d -p 127.0.0.1:3000:80 44cb4ace5601
 
 #### Order
 1. status: Pending -> (Processing -> (Completed -> Return | Declined)) | Cancelled
+    a. DSM: now | cond | action | future
 2. functions
     a. checkout POST api/shoppingCart/checkout
     b. view history GET api/orders
