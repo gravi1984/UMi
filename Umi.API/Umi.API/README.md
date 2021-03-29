@@ -101,3 +101,9 @@ docker run -d -p 127.0.0.1:3000:80 44cb4ace5601
     b. view history GET api/orders
     c. get order GET api/orders/{id}
     d. pay POST api/orders/pay
+    
+    
+#### Git 
+1. reset local add/commit: 
+    a. add: git reset
+    b. commit: git reset HEAD~ 
