@@ -21,7 +21,9 @@ namespace Umi.API.Services
         public async Task<IEnumerable<TouristRoute>> GetTouristRoutesAsync(
             string keyword,
             string ratingOpt,
-            int? ratingValue
+            int? ratingValue,
+            int pageSize,
+            int pageNumber
         )
         {
             // defer execution Linq -> SQL
@@ -45,12 +47,17 @@ namespace Umi.API.Services
                 };
             }
 
+            
+            // paginationL: Skip + Take
+
+            var skip = (pageNumber - 1) * pageSize;
+            result = result.Skip(skip);
+            result = result.Take(pageSize);
+            
+            
             // if keyword is empty, return all list is fine.
             return await result.ToListAsync();
-
-            // EF: include to join 2 table by FK
-            // include vs join: Eager Load
-            // Lazy Load
+            
         }
 
         public async Task<TouristRoute> GetTouristRouteAsync(Guid id)

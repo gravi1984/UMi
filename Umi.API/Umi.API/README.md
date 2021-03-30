@@ -103,6 +103,19 @@ docker run -d -p 127.0.0.1:3000:80 44cb4ace5601
     d. pay POST api/orders/pay
     
     
+ #### Pagination
+ 1. purpose: API performance, pagination when **DB** | API | FE
+ 2. param: pgsize | pg
+ 3. Controller <-> Service <-> SQL paged Model 
+ 
+ 
+ #### Arch, DDD
+ 1. Presentation Layer: Controller DTO
+ 2. Business Layer: Model Service
+ 3. Data Access Layer: Database
+ 4. Infrastructure Layer: all-other helper
+ 5. DDD: Presentation - Application - Domain - Infrastructure (Solution Item)
+    
 #### Git 
 1. reset local add/commit: 
     a. add: git reset

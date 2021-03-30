@@ -33,7 +33,7 @@ namespace Umi.API.Controllers
         // api/touristRoute?keyword={keyword}
         [HttpGet]
         [HttpHead]
-        [Authorize(AuthenticationSchemes = "Bearer")]
+        // [Authorize(AuthenticationSchemes = "Bearer")]
         // check if resource exist; cache
         public async Task<IActionResult> GetTouristRoutes(
             [FromQuery] TouristRouteResourceParameters parameters  // FromQuery vs FromBody
@@ -52,7 +52,13 @@ namespace Umi.API.Controllers
             //     ratingValue = Int32.Parse(match.Groups[2].Value);
             // }
             //
-            var touristRoutesFromRepo = await _touristRouteRepository.GetTouristRoutesAsync(parameters.Keyword, parameters.RatingOpt, parameters.RatingValue);
+            var touristRoutesFromRepo = await _touristRouteRepository.GetTouristRoutesAsync(
+                parameters.Keyword, 
+                parameters.RatingOpt, 
+                parameters.RatingValue,
+                parameters.PageSize,
+                parameters.PageNumber);
+            
             if (!touristRoutesFromRepo.Any())
             {
                 return NotFound("no routes found");

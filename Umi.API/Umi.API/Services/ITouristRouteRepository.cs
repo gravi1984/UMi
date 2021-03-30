@@ -9,7 +9,14 @@ namespace Umi.API.Services
     public interface ITouristRouteRepository
     {
         // from DB, get all routes
-        Task<IEnumerable<TouristRoute>> GetTouristRoutesAsync(string keyword, string ratingOpt, int? ratingValue);
+        Task<IEnumerable<TouristRoute>> GetTouristRoutesAsync(
+            string keyword, 
+            string ratingOpt, 
+            int? ratingValue,
+            int parametersPageSize, 
+            int parametersPageNumber
+            );
+        
         Task<TouristRoute> GetTouristRouteAsync(Guid id);
 
         Task<bool> TouristRouteExistsAsync(Guid id);
@@ -44,5 +51,6 @@ namespace Umi.API.Services
         Task<Order> GetOrderById(Guid orderId);
 
         Task<bool> SaveAsync();
+      
     }
 }
