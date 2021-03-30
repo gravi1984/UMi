@@ -48,7 +48,7 @@ namespace Umi.API.Controllers
             
             // 2. user userId get shoppingCart
             var shoppingCart = await _touristRouteRepository.GetShoppingCartByUserId(userId);
-            
+
             // 0. init shopingCart when User register -> Auth controller
             return Ok(_mapper.Map<ShoppingCartDto>(shoppingCart));
 

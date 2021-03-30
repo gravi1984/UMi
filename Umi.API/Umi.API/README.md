@@ -107,3 +107,4 @@ docker run -d -p 127.0.0.1:3000:80 44cb4ace5601
 1. reset local add/commit: 
     a. add: git reset
     b. commit: git reset HEAD~ 
+2. reset remote change:

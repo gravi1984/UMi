@@ -163,5 +163,33 @@ namespace Umi.API.Services
         {
             await _context.Orders.AddAsync(order);
         }
+
+        public async Task<IEnumerable<Order>> GetOrdersByUserId(string userId)
+        {
+
+            // Below get Order list without linking LineItem Table
+            // return await _context.Orders.Where(o => o.UserId == userId).ToListAsync();
+            
+            // Below get Order list and link LineItem table using Include().ThenInclude() statement
+            return await _context.Orders
+                .Include(o => o.User)
+                .Include(o => o.OrderItems).ThenInclude(li => li.TouristRoute)
+                .Where(o => o.UserId == userId)
+                .ToListAsync();
+
+            // return await _context.ShoppingCarts
+            //     .Include(s => s.User)
+            //     .Include(s => s.ShoppingCartItems).ThenInclude(li => li.TouristRoute)
+            //     .Where(s => s.UserId == userId)
+            //     .FirstOrDefaultAsync();
+        }
+
+        public async Task<Order> GetOrderById(Guid orderId)
+        {
+            return await _context.Orders
+                .Include(o => o.OrderItems).ThenInclude(oi => oi.TouristRoute)
+                .Where(o => o.Id == orderId)
+                .FirstOrDefaultAsync();
+        }
     }
 }
