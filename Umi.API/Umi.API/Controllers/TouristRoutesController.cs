@@ -11,6 +11,9 @@ using Umi.API.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Umi.API.Helper;
 using Umi.API.Models;
 using Umi.API.ResourceParameters;
 
@@ -23,15 +26,58 @@ namespace Umi.API.Controllers
     {
         private readonly ITouristRouteRepository _touristRouteRepository;
         private readonly IMapper _mapper;
+        private readonly IUrlHelper _urlHelper;
 
-        public TouristRoutesController(ITouristRouteRepository touristRouteRepository, IMapper mapper)
+        public TouristRoutesController(ITouristRouteRepository touristRouteRepository, IMapper mapper,
+            IUrlHelperFactory urlHelperFactory,
+            IActionContextAccessor actionContextAccessor)
         {
             _touristRouteRepository = touristRouteRepository;
             _mapper = mapper;
+            _urlHelper = urlHelperFactory.GetUrlHelper(actionContextAccessor.ActionContext);
         }
 
+
+        private string GenerateTouristResourceURL(
+            TouristRouteResourceParameters parameters,
+            PaginationResourceParameters parameters2,
+            ResourceUriType type)
+        {
+            
+            // _urlHelper: tool generate abs Url giving API name
+            // how to use: inject service(startup); inject dependence(instantiate)
+            return type switch
+            {
+                ResourceUriType.PreviousPage => _urlHelper.Link("GetTouristRoutes",
+                    new
+                    {
+                        keyword = parameters.Keyword,
+                        rating = parameters.Rating,
+                        pageNumber = parameters2.PageNumber - 1,
+                        pageSize = parameters2.PageSize
+                    }),
+                ResourceUriType.NextPage => _urlHelper.Link("GetTouristRoutes",
+                    new
+                    {
+                        keyword = parameters.Keyword,
+                        rating = parameters.Rating,
+                        pageNumber = parameters2.PageNumber + 1,
+                        pageSize = parameters2.PageSize
+                    }),
+                _ => _urlHelper.Link("GetTouristRoutes",
+                    new
+                    {
+                        keyword = parameters.Keyword,
+                        rating = parameters.Rating,
+                        pageNumber = parameters2.PageNumber,
+                        pageSize = parameters2.PageSize
+                    })
+            };
+
+        }
         // api/touristRoute?keyword={keyword}
-        [HttpGet]
+        // use String Name to call API
+        [HttpGet(Name = "GetTouristRoutes")]
         [HttpHead]
         // [Authorize(AuthenticationSchemes = "Bearer")]
         // check if resource exist; cache
@@ -41,18 +87,6 @@ namespace Umi.API.Controllers
         ) 
         {
             
-            // @"" -> C# string
-            // 2 parts: largeThen + 9
-            // Regex regex = new Regex(@"([A-Za-z0-9\-]+)(\d+)");
-            // string ratingOpt = "";
-            // int ratingValue = -1;
-            // Match match = regex.Match(parameters.Rating);
-            // if (match.Success)
-            // {
-            //     ratingOpt = match.Groups[1].Value;
-            //     ratingValue = Int32.Parse(match.Groups[2].Value);
-            // }
-            //
             var touristRoutesFromRepo = await _touristRouteRepository.GetTouristRoutesAsync(
                 parameters.Keyword, 
                 parameters.RatingOpt, 
@@ -66,6 +100,27 @@ namespace Umi.API.Controllers
             }
 
             var touristRouteDtos = _mapper.Map<IEnumerable<TouristRouteDto>>(touristRoutesFromRepo);
+
+            var previousPageLink = touristRoutesFromRepo.HasPrevious
+                ? GenerateTouristResourceURL(parameters, parameters2, ResourceUriType.PreviousPage)
+                : null;
+            
+            var nextPageLink = touristRoutesFromRepo.HasNext
+                ? GenerateTouristResourceURL(parameters, parameters2, ResourceUriType.NextPage)
+                : null;
+            
+            // x-pagination
+            var paginationMetadata = new
+            {
+                previousPageLink,
+                nextPageLink,
+                totalCount = touristRoutesFromRepo.TotalCount,
+                currentPage = touristRoutesFromRepo.CurrentPage,
+                totalPages = touristRoutesFromRepo.TotalPages
+            };
+            
+            Response.Headers.Add("x-pagination", 
+                Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
             return Ok(touristRouteDtos);
             
         }

@@ -107,6 +107,7 @@ docker run -d -p 127.0.0.1:3000:80 44cb4ace5601
  1. purpose: API performance, pagination when **DB** | API | FE
  2. param: pgsize | pg
  3. Controller <-> Service <-> SQL paged Model 
+ 4. Pagination metadata in response header: 
  
  
  #### Arch, DDD
@@ -120,4 +121,4 @@ docker run -d -p 127.0.0.1:3000:80 44cb4ace5601
 1. reset local add/commit: 
     a. add: git reset
     b. commit: git reset HEAD~ 
-2. reset remote change:
+2. reset remote change: HETAOS??
