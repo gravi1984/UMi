@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Umi.API.Database;
+using Umi.API.Helper;
 using Umi.API.Models;
 
 namespace Umi.API.Services
@@ -18,7 +19,7 @@ namespace Umi.API.Services
             _context = context;
         }
 
-        public async Task<IEnumerable<TouristRoute>> GetTouristRoutesAsync(
+        public async Task<PaginationList<TouristRoute>> GetTouristRoutesAsync(
             string keyword,
             string ratingOpt,
             int? ratingValue,
@@ -48,16 +49,9 @@ namespace Umi.API.Services
             }
 
             
-            // paginationL: Skip + Take
+            // pagination using PaginationList<TouristRoute>
+            return await PaginationList<TouristRoute>.CreateAsync(pageNumber, pageSize, result);
 
-            var skip = (pageNumber - 1) * pageSize;
-            result = result.Skip(skip);
-            result = result.Take(pageSize);
-            
-            
-            // if keyword is empty, return all list is fine.
-            return await result.ToListAsync();
-            
         }
 
         public async Task<TouristRoute> GetTouristRouteAsync(Guid id)
@@ -171,18 +165,21 @@ namespace Umi.API.Services
             await _context.Orders.AddAsync(order);
         }
 
-        public async Task<IEnumerable<Order>> GetOrdersByUserId(string userId)
+        public async Task<PaginationList<Order>> GetOrdersByUserId(string userId, int pageSize, int pageNumber)
         {
 
             // Below get Order list without linking LineItem Table
             // return await _context.Orders.Where(o => o.UserId == userId).ToListAsync();
-            
+
+            IQueryable<Order> result = _context.Orders.Where(o => o.UserId == userId);
+            return await PaginationList<Order>.CreateAsync(pageNumber, pageSize, result);
+
             // Below get Order list and link LineItem table using Include().ThenInclude() statement
-            return await _context.Orders
-                .Include(o => o.User)
-                .Include(o => o.OrderItems).ThenInclude(li => li.TouristRoute)
-                .Where(o => o.UserId == userId)
-                .ToListAsync();
+            // return await _context.Orders
+            //     .Include(o => o.User)
+            //     .Include(o => o.OrderItems).ThenInclude(li => li.TouristRoute)
+            //     .Where(o => o.UserId == userId)
+            //     .ToListAsync();
 
             // return await _context.ShoppingCarts
             //     .Include(s => s.User)

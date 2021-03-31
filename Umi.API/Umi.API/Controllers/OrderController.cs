@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Umi.API.Dtos;
+using Umi.API.ResourceParameters;
 using Umi.API.Services;
 
 namespace Umi.API.Controllers
@@ -35,7 +36,8 @@ namespace Umi.API.Controllers
 
         [HttpGet]
         [Authorize(AuthenticationSchemes = "Bearer")]
-        public async Task<IActionResult> GetOrders()
+        public async Task<IActionResult> GetOrders(
+            [FromQuery] PaginationResourceParameters parameters)
         {
             // 1. get current User
             var userId = _httpContextAccessor
@@ -45,7 +47,7 @@ namespace Umi.API.Controllers
                 .Value;
 
             // 2. use userId get orders
-            var ordersFromRepo = await _touristRouteRepository.GetOrdersByUserId(userId);
+            var ordersFromRepo = await _touristRouteRepository.GetOrdersByUserId(userId, parameters.PageSize, parameters.PageNumber);
 
             if (ordersFromRepo == null || ordersFromRepo.Count() <= 0)
             {

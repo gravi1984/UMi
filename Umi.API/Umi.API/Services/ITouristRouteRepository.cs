@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using Umi.API.Dtos;
 using Umi.API.Models;
 using System.Threading.Tasks;
+using Umi.API.Helper;
 
 namespace Umi.API.Services
 {
     public interface ITouristRouteRepository
     {
         // from DB, get all routes
-        Task<IEnumerable<TouristRoute>> GetTouristRoutesAsync(
+        Task<PaginationList<TouristRoute>> GetTouristRoutesAsync(
             string keyword, 
             string ratingOpt, 
             int? ratingValue,
@@ -47,7 +48,7 @@ namespace Umi.API.Services
 
         Task AddOrderAsync(Order order);
         
-        Task<IEnumerable<Order>> GetOrdersByUserId(string userId);
+        Task<PaginationList<Order>> GetOrdersByUserId(string userId, int pageSize, int pageNumber);
         Task<Order> GetOrderById(Guid orderId);
 
         Task<bool> SaveAsync();

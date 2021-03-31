@@ -36,7 +36,8 @@ namespace Umi.API.Controllers
         // [Authorize(AuthenticationSchemes = "Bearer")]
         // check if resource exist; cache
         public async Task<IActionResult> GetTouristRoutes(
-            [FromQuery] TouristRouteResourceParameters parameters  // FromQuery vs FromBody
+            [FromQuery] TouristRouteResourceParameters parameters,
+            [FromQuery] PaginationResourceParameters parameters2 // FromQuery vs FromBody
         ) 
         {
             
@@ -56,8 +57,8 @@ namespace Umi.API.Controllers
                 parameters.Keyword, 
                 parameters.RatingOpt, 
                 parameters.RatingValue,
-                parameters.PageSize,
-                parameters.PageNumber);
+                parameters2.PageSize,
+                parameters2.PageNumber);
             
             if (!touristRoutesFromRepo.Any())
             {
