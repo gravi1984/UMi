@@ -25,14 +25,16 @@ namespace Umi.API.Controllers
         private readonly ITouristRouteRepository _touristRouteRepository;
         private readonly IMapper _mapper;
         private readonly IUrlHelper _urlHelper;
-
+        private readonly IPropertyMappingService _propertyMappingService;
         public TouristRoutesController(ITouristRouteRepository touristRouteRepository, IMapper mapper,
             IUrlHelperFactory urlHelperFactory,
-            IActionContextAccessor actionContextAccessor)
+            IActionContextAccessor actionContextAccessor,
+            IPropertyMappingService propertyMappingService)
         {
             _touristRouteRepository = touristRouteRepository;
             _mapper = mapper;
             _urlHelper = urlHelperFactory.GetUrlHelper(actionContextAccessor.ActionContext);
+            _propertyMappingService = propertyMappingService;
         }
 
 
@@ -88,6 +90,12 @@ namespace Umi.API.Controllers
             [FromQuery] PaginationResourceParameters parameters2 // FromQuery vs FromBody
         ) 
         {
+
+            if (!_propertyMappingService.IsMappingExists<TouristRouteDto, TouristRoute>(
+                parameters.OrderBy))
+            {
+                return BadRequest("please input correct field to sort.");
+            }
             
             var touristRoutesFromRepo = await _touristRouteRepository.GetTouristRoutesAsync(
                 parameters.Keyword, 
@@ -96,6 +104,7 @@ namespace Umi.API.Controllers
                 parameters2.PageSize,
                 parameters2.PageNumber,
                 parameters.OrderBy);
+  
             
             if (!touristRoutesFromRepo.Any())
             {
