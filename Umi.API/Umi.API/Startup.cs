@@ -41,6 +41,8 @@ namespace Umi.API
         {
             
             
+            
+            
             // inject managed services
             // return 406 when request with unsupported Accept header
             services.AddControllers(setupAction =>
@@ -122,6 +124,8 @@ namespace Umi.API
                 .AddEntityFrameworkStores<AppDbContext>();
 
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+
+            services.AddTransient<IPropertyMappingService, PropertyMappingService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

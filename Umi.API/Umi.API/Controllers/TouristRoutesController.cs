@@ -1,9 +1,7 @@
 #nullable enable
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Umi.API.Dtos;
@@ -77,6 +75,7 @@ namespace Umi.API.Controllers
         }
         // api/touristRoute?keyword={keyword}
         // use String Name to call API
+        
         [HttpGet(Name = "GetTouristRoutes")]
         [HttpHead]
         // [Authorize(AuthenticationSchemes = "Bearer")]
@@ -92,7 +91,8 @@ namespace Umi.API.Controllers
                 parameters.RatingOpt, 
                 parameters.RatingValue,
                 parameters2.PageSize,
-                parameters2.PageNumber);
+                parameters2.PageNumber,
+                parameters.OrderBy);
             
             if (!touristRoutesFromRepo.Any())
             {

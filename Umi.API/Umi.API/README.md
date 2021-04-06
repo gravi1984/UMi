@@ -109,6 +109,10 @@ docker run -d -p 127.0.0.1:3000:80 44cb4ace5601
  3. Controller <-> Service <-> SQL paged Model 
  4. Pagination metadata in response header: 
  
+ #### Sorting
+ 1. Query -> Controller -> Repo -> DTO return
+ 2. Module, Reuse: PropertyMappingService
+ 
  
  #### Arch, DDD
  1. Presentation Layer: Controller DTO

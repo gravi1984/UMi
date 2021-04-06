@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Umi.API.Database;
+using Umi.API.Dtos;
 using Umi.API.Helper;
 using Umi.API.Models;
 
@@ -13,10 +14,12 @@ namespace Umi.API.Services
     public class TouristRouteRepository : ITouristRouteRepository
     {
         private readonly AppDbContext _context;
+        private readonly IPropertyMappingService _propertyMappingService;
 
-        public TouristRouteRepository(AppDbContext context)
+        public TouristRouteRepository(AppDbContext context, IPropertyMappingService propertyMappingService)
         {
             _context = context;
+            _propertyMappingService = propertyMappingService;
         }
 
         public async Task<PaginationList<TouristRoute>> GetTouristRoutesAsync(
@@ -24,7 +27,8 @@ namespace Umi.API.Services
             string ratingOpt,
             int? ratingValue,
             int pageSize,
-            int pageNumber
+            int pageNumber,
+            string orderBy
         )
         {
             // defer execution Linq -> SQL
@@ -38,6 +42,21 @@ namespace Umi.API.Services
                 result = result.Where(t => t.Title.Contains(keyword));
             }
 
+            if (!string.IsNullOrWhiteSpace(orderBy))
+            {
+                // if (orderBy.ToLower() == "originalproce")
+                // {
+                //     result = result.OrderBy(t => t.OriginalPrice);
+                // }
+                
+                var touristRouteMappingDictionary = _propertyMappingService
+                    .GetPropertyMapping<TouristRouteDto, TouristRoute>();
+                
+                result = result.ApplySort(orderBy, touristRouteMappingDictionary);
+
+            }
+            
+            
             if (ratingValue >= 0)
             {
                 result = ratingOpt switch

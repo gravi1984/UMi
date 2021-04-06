@@ -3,7 +3,7 @@ namespace Umi.API.ResourceParameters
     public class PaginationResourceParameters
     {
         private int _pageNumber = 1;
-        private int _pageSize = 2;
+        private int _pageSize = 10;
         private const int maxPageSize = 50;
 
         public int PageNumber

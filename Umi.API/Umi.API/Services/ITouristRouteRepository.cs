@@ -15,7 +15,8 @@ namespace Umi.API.Services
             string ratingOpt, 
             int? ratingValue,
             int parametersPageSize, 
-            int parametersPageNumber
+            int parametersPageNumber,
+            string orderBy
             );
         
         Task<TouristRoute> GetTouristRouteAsync(Guid id);

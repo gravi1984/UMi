@@ -12,8 +12,8 @@ namespace Umi.API.Dtos
         public string Description { get; set; }
   
         // Data transfer: hide/transfer data to FE
-        // public decimal OriginalPrice { get; set; }
-        // public double? DiscountPresent { get; set; }
+        public decimal OriginalPrice { get; set; }
+        public double? DiscountPresent { get; set; }
         public decimal Price { get; set; }
         
         public DateTime CreateTime { get; set; }
